@@ -16,6 +16,7 @@ if (previous.version !== 1 || !Array.isArray(previous.entries)) throw new Error(
 const entries = new Map(previous.entries.map(entry => [`${entry.date}:${entry.exchange}`, entry]));
 let failed = false;
 const collectedDates = new Map();
+const warnings = [];
 async function official(url) {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
@@ -53,13 +54,22 @@ for (const exchange of ['TWSE', 'TPEX']) {
     console.log(`${exchange}: ${saved.date}, ${market.rows.length} equities, saved`);
   } catch {
     failed = true;
-    console.error(`${exchange}: official dataset unavailable or incomplete; existing files retained`);
+    const warning = `${exchange}: official dataset unavailable or incomplete; existing files retained`;
+    warnings.push(warning);
+    console.error(warning);
   }
 }
 if (collectedDates.size === 2 && collectedDates.get('TWSE') !== collectedDates.get('TPEX')) {
   failed = true;
-  console.error('TWSE/TPEx official dates differ; each valid file is retained, run marked partial');
+  const warning = `TWSE/TPEx official dates differ (${collectedDates.get('TWSE')} / ${collectedDates.get('TPEX')}); each valid file is retained, run marked partial`;
+  warnings.push(warning);
+  console.error(warning);
 }
 const ordered = [...entries.values()].sort((a,b) => b.date.localeCompare(a.date) || a.exchange.localeCompare(b.exchange)).slice(0, 180);
-await writeFile(manifestPath, JSON.stringify({ version: 1, checkedAt: new Date().toISOString(), lastRunSucceeded: !failed, entries: ordered }, null, 2));
+const completeDates = [...new Set(ordered.map(entry => entry.date))].filter(date =>
+  entries.has(`${date}:TWSE`) && entries.has(`${date}:TPEX`)).sort().reverse();
+await writeFile(manifestPath, JSON.stringify({ version: 1, checkedAt: new Date().toISOString(),
+  lastRunSucceeded: !failed, latestCompleteDate: completeDates[0] ?? null,
+  sourceDates: { TWSE: collectedDates.get('TWSE') ?? null, TPEX: collectedDates.get('TPEX') ?? null },
+  warnings, entries: ordered }, null, 2));
 if (failed) process.exitCode = 1;

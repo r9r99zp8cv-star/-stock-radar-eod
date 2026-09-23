@@ -1,5 +1,5 @@
 # -stock-radar-eod
 
-台股 AI 雷達的免費盤後資料保存庫。GitHub Actions 會在台灣時間 17:27、20:27 嘗試收集 TWSE／TPEx 的公開官方盤後資料，保存到 `data/`。官方資料若未齊全或兩個市場的日期不同，工作流程會標示未完成；已取得的有效市場資料仍會保存。排程可能延遲，請以 `data/manifest.json` 的日期與狀態核對。
+台股 AI 雷達的免費盤後資料保存庫。GitHub Actions 會在台灣時間 15:15、17:27、20:27，以及隔天 08:37 嘗試收集 TWSE／TPEx 的公開官方盤後資料，保存到 `data/`。官方資料若未齊全或兩個市場的日期不同，工作流程會標示未完成；已取得的有效市場資料仍會保存。排程可能延遲，請以 `data/manifest.json` 的 `sourceDates`、`latestCompleteDate` 與 `lastRunSucceeded` 核對。
 
 這裡只放公開市場資料；請勿上傳自選股、持股、帳號資訊、`.env` 或 API 金鑰。
