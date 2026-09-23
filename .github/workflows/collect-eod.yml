@@ -1,6 +1,14 @@
 name: Collect Taiwan after-close data
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/collect-eod.yml'
+      - 'scripts/collect-eod.mjs'
+      - 'lib/eod-radar.ts'
+      - 'lib/eod-history.ts'
+      - 'lib/after-close-timing.ts'
   schedule:
     # Taipei 17:27 and 20:27. GitHub may delay runs; this is not a real-time SLA.
     - cron: '27 9,12 * * *'
