@@ -5,6 +5,9 @@ import { enrichRows, numeric, parseDaily, parseIndex, SOURCES, taipeiToday, trad
 import { freezeObservations, OBSERVATION_RULE } from '../lib/eod-history.ts';
 
 const output = resolve(process.argv[2] || 'data');
+// TPEx's daily_close_quotes includes many historical rows (~4.6 MB); this official
+// current-day endpoint has the same needed fields at a fraction of the size.
+const TPEX_CURRENT_QUOTES = 'https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes';
 await mkdir(output, { recursive: true });
 async function jsonFile(path, fallback) {
   try { return JSON.parse(await readFile(path, 'utf8')); }
@@ -20,7 +23,7 @@ const warnings = [];
 async function official(url) {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
+      const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(30000) });
       if (!response.ok) throw new Error(`official HTTP ${response.status}`);
       return await response.json();
     } catch (error) {
@@ -79,8 +82,8 @@ async function twseCandidate() {
 for (const exchange of ['TWSE', 'TPEX']) {
   try {
     const source = exchange === 'TWSE' ? await twseCandidate() :
-      candidate(...await Promise.all([official(SOURCES.TPEX.quotes), official(SOURCES.TPEX.index)]),
-        'TPEX', new Date().toISOString(), SOURCES.TPEX);
+      candidate(...await Promise.all([official(TPEX_CURRENT_QUOTES), official(SOURCES.TPEX.index)]),
+        'TPEX', new Date().toISOString(), { quotes: TPEX_CURRENT_QUOTES, index: SOURCES.TPEX.index });
     const { rawQuotes, rawIndex, market, capturedAt, sourceUrls } = source;
     // Preserve eligible no-trade/missing-price rows so coverage does not look artificially complete.
     const filtered = rawQuotes.filter(row => /^[1-9]\d{3}$/.test(String(exchange === 'TWSE' ? row.Code : row.SecuritiesCompanyCode).trim()));
