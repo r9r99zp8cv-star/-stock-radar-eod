@@ -68,8 +68,26 @@ if (collectedDates.size === 2 && collectedDates.get('TWSE') !== collectedDates.g
 const ordered = [...entries.values()].sort((a,b) => b.date.localeCompare(a.date) || a.exchange.localeCompare(b.exchange)).slice(0, 180);
 const completeDates = [...new Set(ordered.map(entry => entry.date))].filter(date =>
   entries.has(`${date}:TWSE`) && entries.has(`${date}:TPEX`)).sort().reverse();
+if (completeDates[0]) {
+  const date = completeDates[0];
+  const markets = {};
+  for (const exchange of ['TWSE', 'TPEX']) {
+    const saved = await jsonFile(join(output, date, `${exchange}.json`), null);
+    if (!saved || saved.version !== 1 || saved.date !== date || saved.exchange !== exchange) throw new Error('Complete-date archive missing');
+    const market = parseDaily(saved.rawQuotes, exchange, new Date(saved.capturedAt));
+    const index = parseIndex(saved.rawIndex, exchange, date);
+    if (market.date !== date || market.rows.length < 500 || !index) throw new Error('Complete-date archive invalid');
+    markets[exchange] = { indexChangePercent: index.changePercent,
+      rows: market.rows.map(row => [row.symbol, row.name, row.close, row.changePercent, row.shares]) };
+  }
+  // Public, compact, complete-day input for a private five-symbol background checker.
+  // Never put watchlists, push endpoints, account data, or keys in this repository.
+  await writeFile(join(output, 'latest-compact.json'), JSON.stringify({ version: 1, date,
+    sourceCapturedAt: { TWSE: entries.get(`${date}:TWSE`).capturedAt, TPEX: entries.get(`${date}:TPEX`).capturedAt }, markets }));
+}
 await writeFile(manifestPath, JSON.stringify({ version: 1, checkedAt: new Date().toISOString(),
   lastRunSucceeded: !failed, latestCompleteDate: completeDates[0] ?? null,
   sourceDates: { TWSE: collectedDates.get('TWSE') ?? null, TPEX: collectedDates.get('TPEX') ?? null },
   warnings, entries: ordered }, null, 2));
 if (failed) process.exitCode = 1;
+
