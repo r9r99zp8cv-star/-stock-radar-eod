@@ -1,14 +1,21 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-30T00:55:09.859Z",
-  "lastRunSucceeded": true,
+  "checkedAt": "2026-09-30T07:29:55.824Z",
+  "lastRunSucceeded": false,
   "latestCompleteDate": "2026-09-29",
   "sourceDates": {
-    "TWSE": "2026-09-29",
+    "TWSE": "2026-09-30",
     "TPEX": "2026-09-29"
   },
-  "warnings": [],
+  "warnings": [
+    "TWSE/TPEx official dates differ (2026-09-30 / 2026-09-29); each valid file is retained, run marked partial"
+  ],
   "entries": [
+    {
+      "date": "2026-09-30",
+      "exchange": "TWSE",
+      "capturedAt": "2026-09-30T07:29:52.364Z"
+    },
     {
       "date": "2026-09-29",
       "exchange": "TPEX",
