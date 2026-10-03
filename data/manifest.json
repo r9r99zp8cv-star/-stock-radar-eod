@@ -1,15 +1,13 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-03T00:53:23.104Z",
-  "lastRunSucceeded": false,
+  "checkedAt": "2026-10-03T07:29:02.763Z",
+  "lastRunSucceeded": true,
   "latestCompleteDate": "2026-10-02",
   "sourceDates": {
     "TWSE": "2026-10-02",
-    "TPEX": null
+    "TPEX": "2026-10-02"
   },
-  "warnings": [
-    "TPEX: official dataset unavailable or incomplete (terminated); existing files retained"
-  ],
+  "warnings": [],
   "entries": [
     {
       "date": "2026-10-02",
