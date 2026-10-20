@@ -1,15 +1,13 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-19T16:34:40.884Z",
-  "lastRunSucceeded": false,
+  "checkedAt": "2026-10-20T05:12:42.219Z",
+  "lastRunSucceeded": true,
   "latestCompleteDate": "2026-10-19",
   "sourceDates": {
-    "TWSE": "2026-10-16",
+    "TWSE": "2026-10-19",
     "TPEX": "2026-10-19"
   },
-  "warnings": [
-    "TWSE/TPEx official dates differ (2026-10-16 / 2026-10-19); each valid file is retained, run marked partial"
-  ],
+  "warnings": [],
   "entries": [
     {
       "date": "2026-10-19",
