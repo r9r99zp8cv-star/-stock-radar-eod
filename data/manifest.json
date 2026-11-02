@@ -1,16 +1,21 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-01T16:12:34.156Z",
+  "checkedAt": "2026-11-02T06:44:49.158Z",
   "lastRunSucceeded": false,
   "latestCompleteDate": "2026-10-30",
   "sourceDates": {
-    "TWSE": "2026-10-30",
+    "TWSE": "2026-11-02",
     "TPEX": null
   },
   "warnings": [
     "TPEX: official dataset unavailable or incomplete (same-date index missing); existing files retained"
   ],
   "entries": [
+    {
+      "date": "2026-11-02",
+      "exchange": "TWSE",
+      "capturedAt": "2026-11-02T06:44:46.893Z"
+    },
     {
       "date": "2026-10-30",
       "exchange": "TPEX",
